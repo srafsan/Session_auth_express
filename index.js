@@ -1,5 +1,6 @@
 const express = require("express");
 const session = require("express-session");
+const bodyParser = require("body-parser");
 
 const app = express();
 const PORT = 3000;
@@ -14,6 +15,13 @@ const users = [
   { id: 3, name: "Jamal", email: "jamal@gmail.com", password: "secret" },
 ];
 
+// Middlewares
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  })
+);
+
 app.use(
   session({
     name: SESSION_NAME,
@@ -27,6 +35,23 @@ app.use(
   })
 );
 
+const redirectLogin = (req, res, next) => {
+  if (!req.session.userId) {
+    res.redirect("/login");
+  } else {
+    next();
+  }
+};
+
+const redirectHome = (req, res, next) => {
+  if (req.session.userId) {
+    res.redirect("/home");
+  } else {
+    next();
+  }
+};
+
+// ROUTES
 app.get("/", (req, res) => {
   const { userId } = req.session;
 
@@ -48,18 +73,20 @@ app.get("/", (req, res) => {
   `);
 });
 
-app.get("/home", (req, res) => {
+app.get("/home", redirectLogin, (req, res) => {
+  const user = users.find((user) => user.id === req.session.userId);
+
   res.send(`
     <h1>Home</h1>
     <a href='/'>Main</a>
     <ul>
-      <li>Name: </li>
-      <li>Email: </li>
+      <li>Name: ${user.name}</li>
+      <li>Email: ${user.email}</li>
     </ul>
   `);
 });
 
-app.get("/login", (req, res) => {
+app.get("/login", redirectHome, (req, res) => {
   res.send(
     `<h1>Login</h1>
     <form method="post" action="/login">
@@ -72,7 +99,7 @@ app.get("/login", (req, res) => {
   );
 });
 
-app.get("/register", (req, res) => {
+app.get("/register", redirectHome, (req, res) => {
   res.send(
     `<h1>Login</h1>
       <form method="post" action="/register">
@@ -86,11 +113,57 @@ app.get("/register", (req, res) => {
   );
 });
 
-app.post("/login", (req, res) => {});
+app.post("/login", redirectHome, (req, res) => {
+  const { email, password } = req.body;
 
-app.post("/register", (req, res) => {});
+  if (email && password) {
+    const user = users.find(
+      (user) => user.email === email && user.password === password
+    );
 
-app.post("/logout", (req, res) => {});
+    if (user) {
+      req.session.userId = user.id;
+      return res.redirect("/home");
+    }
+  }
+
+  res.redirect("/login");
+});
+
+app.post("/register", redirectHome, (req, res) => {
+  const { name, email, password } = req.body;
+
+  if (name && email && password) {
+    const exists = users.some((user) => user.email === email);
+
+    if (!exists) {
+      const user = {
+        id: users.length + 1,
+        name,
+        email,
+        password,
+      };
+
+      users.push(user);
+      req.session.userId = user.id;
+
+      return res.redirect("/home");
+    }
+  }
+
+  res.redirect("/register");
+});
+
+app.post("/logout", redirectLogin, (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      return res.redirect("/home");
+    }
+
+    res.clearCookie(SESSION_NAME);
+    res.redirect("/login");
+  });
+});
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);
