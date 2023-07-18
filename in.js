@@ -44,6 +44,8 @@ const redirectLogin = (req, res, next) => {
 };
 
 const redirectHome = (req, res, next) => {
+  console.log("session request", req.sessionID);
+  console.log("session request id", req.session.userId);
   if (req.session.userId) {
     res.redirect("/home");
   } else {
@@ -53,6 +55,7 @@ const redirectHome = (req, res, next) => {
 
 // ROUTES
 app.get("/", (req, res) => {
+  console.log(req.session);
   const { userId } = req.session;
 
   res.send(`
@@ -74,8 +77,17 @@ app.get("/", (req, res) => {
 });
 
 app.get("/home", redirectLogin, (req, res) => {
+  console.log(
+    "session user id",
+    req.sessionID,
+    req.session,
+    req.session.userId
+  );
   const user = users.find((user) => user.id === req.session.userId);
 
+  req.sessionStore.all((err, obj) => {
+    console.log(obj);
+  });
   res.send(`
     <h1>Home</h1>
     <a href='/'>Main</a>
