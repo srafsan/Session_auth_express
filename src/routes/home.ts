@@ -2,7 +2,8 @@ import express, { Express, Request, Response, NextFunction } from "express";
 import { redirectLogin } from "../middleware/sessionMiddleware";
 import { users } from "../models/db";
 import route from "../common/routeNames";
-
+import {getAllUser} from "../services/home";
+import {createUser} from "../models/mysql";
 export const homeRouter: Express = express();
 // Home page route.
 homeRouter.get(
@@ -20,3 +21,12 @@ homeRouter.get(
     `);
   }
 );
+
+homeRouter.get('/alluser', async (req: Request, res: Response)=>{
+    const user = await getAllUser()
+    res.json(user)
+})
+
+homeRouter.post('/postUser', (req: Request, res: Response)=>{
+    createUser()
+})

@@ -1,12 +1,16 @@
 import express, { Express, Request, Response } from "express";
 import session from "express-session";
 import bodyParser from "body-parser";
+import swaggerJSDoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express";
 // import mysql, {Connection} from 'mysql';
+import prisma from "./prisma";
+
 import { appConfig } from "./config/appConfig";
 import { router as authRouter } from "./routes/auth";
 import { homeRouter } from "./routes/home";
 import route from "./common/routeNames";
-import databaseRouter from "./models/mysql";
+// import databaseRouter from "./models/mysql";
 
 const app: Express = express();
 
@@ -45,9 +49,30 @@ app.get(route.home.main, (req: Request, res: Response) => {
     `);
 });
 
+
+const options = {
+    definition: {
+        openapi: "3.0.1",
+        info: {
+            title: appConfig.appDesc || "this is title",
+            version: "1.0.1"
+        },
+        schemas: ['http', 'https'],
+        servers: [{url: `http://localhost:${appConfig.port}`}],
+    },
+        apis: [
+            `${__dirname}/routes/auth.js`
+        ],
+    }
+
+console.log(`${__dirname}`)
+const swaggerSpec = swaggerJSDoc(options)
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 app.use(route.home.main, authRouter);
 app.use(route.home.main, homeRouter);
-app.use(route.home.main, databaseRouter);
+// app.use(route.home.main, databaseRouter);
 
 app.listen(appConfig.port, () => {
   console.log(`Example app listening on port ${appConfig.port}`);

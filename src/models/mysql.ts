@@ -1,24 +1,14 @@
-import express, { Express, Request, Response, NextFunction } from "express";
-import mysql, { Connection } from "mysql";
+import { PrismaClient } from '@prisma/client'
 
+const prisma = new PrismaClient()
 
-const databaseRouter: Express = express()
-
-// Database
-const db: Connection = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "expressDB",
-});
-
-databaseRouter.get('/users', (req: Request, res: Response) => {
-  const sql = "SELECT * FROM users";
-  db.query(sql, (err:any, data:any)=> {
-    if(err) return res.json(err)
-    return res.json(data)
+export async function createUser() {
+  // ... you will write your Prisma Client queries here
+  const user = await prisma.user.create({
+    data: {
+      email: 'rahim@prisma.io',
+      name: 'Rahim',
+      password: 'secret'
+    },
   })
-})
-
-
-export default databaseRouter;
+}
