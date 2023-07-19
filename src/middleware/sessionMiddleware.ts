@@ -14,7 +14,7 @@ export const redirectLogin = (
   next: NextFunction
 ) => {
   if (!req.session.userId) {
-    res.redirect(route.login);
+    res.redirect(route.auth.login);
   } else {
     next();
   }
@@ -26,7 +26,7 @@ export const redirectHome = (
   next: NextFunction
 ) => {
   if (req.session.userId) {
-    res.redirect(route.home);
+    res.redirect(route.home.main);
   } else {
     next();
   }

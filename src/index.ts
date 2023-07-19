@@ -27,28 +27,27 @@ app.use(
 );
 
 // ROUTES
-app.get("/", (req: Request, res: Response) => {
+app.get(route.home.main, (req: Request, res: Response) => {
   res.send(`
       <h1>Welcome Screen!!</h1>
       ${
         req.session?.userId
           ? `
-      <a href=${route.home}>Home</a>
-      <form method="post" action="/logout">
+      <a href=${route.home.main}>Home</a>
+      <form method="post" action=${route.auth.logout}>
         <button>Logout</button>
       </form>
       `
-          : `
-         
-      <a href=${route.login}>Login</a>
-      <a href=${route.signup}>Register</a>`
+          : `    
+      <a href=${route.auth.login}>Login</a>
+      <a href=${route.auth.signup}>Register</a>`
       }   
     `);
 });
 
-app.use("/", authRouter);
-app.use("/", homeRouter);
-app.use('/', databaseRouter)
+app.use(route.home.main, authRouter);
+app.use(route.home.main, homeRouter);
+app.use(route.home.main, databaseRouter);
 
 app.listen(appConfig.port, () => {
   console.log(`Example app listening on port ${appConfig.port}`);
