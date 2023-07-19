@@ -20,7 +20,7 @@ databaseRouter.get(route.common.users, (req: Request, res: Response) => {
     if (err) return res.json(err);
 
     // users = data
-    // console.log("db.ts", data);
+    console.log("db.ts", data);
 
     return res.json(data);
   });
