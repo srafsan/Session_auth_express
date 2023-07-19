@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.db = exports.users = exports.databaseRouter = void 0;
 const express_1 = __importDefault(require("express"));
 const mysql_1 = __importDefault(require("mysql"));
+const routeNames_1 = __importDefault(require("../common/routeNames"));
 const databaseRouter = (0, express_1.default)();
 exports.databaseRouter = databaseRouter;
 // Database
@@ -18,7 +19,7 @@ const db = mysql_1.default.createConnection({
 exports.db = db;
 let users = [];
 exports.users = users;
-databaseRouter.get('/users', (req, res) => {
+databaseRouter.get(routeNames_1.default.common.users, (req, res) => {
     const sql = "SELECT * FROM users";
     db.query(sql, (err, data) => {
         if (err)
