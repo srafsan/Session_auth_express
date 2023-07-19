@@ -12,20 +12,13 @@ const db: Connection = mysql.createConnection({
   database: "expressDB",
 });
 
-let users: any[] = []
-
 databaseRouter.get('/users', (req: Request, res: Response) => {
   const sql = "SELECT * FROM users";
   db.query(sql, (err:any, data:any)=> {
     if(err) return res.json(err)
-
-    // users = data
-    // console.log("db.ts", data);
-
     return res.json(data)
   })
 })
 
 
-
-export {databaseRouter, users, db};
+export default databaseRouter;

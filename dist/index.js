@@ -6,10 +6,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const express_session_1 = __importDefault(require("express-session"));
 const body_parser_1 = __importDefault(require("body-parser"));
+// import mysql, {Connection} from 'mysql';
 const appConfig_1 = require("./config/appConfig");
 const auth_1 = require("./routes/auth");
 const home_1 = require("./routes/home");
 const routeNames_1 = __importDefault(require("./common/routeNames"));
+const mysql_1 = __importDefault(require("./models/mysql"));
 const app = (0, express_1.default)();
 // Middlewares
 app.use(body_parser_1.default.urlencoded({
@@ -41,6 +43,7 @@ app.get("/", (req, res) => {
 });
 app.use("/", auth_1.router);
 app.use("/", home_1.homeRouter);
+app.use('/', mysql_1.default);
 app.listen(appConfig_1.appConfig.port, () => {
     console.log(`Example app listening on port ${appConfig_1.appConfig.port}`);
 });
