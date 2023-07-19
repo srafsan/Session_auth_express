@@ -24,26 +24,25 @@ app.use((0, express_session_1.default)({
     saveUninitialized: true,
 }));
 // ROUTES
-app.get("/", (req, res) => {
+app.get(routeNames_1.default.home.main, (req, res) => {
     var _a;
     res.send(`
       <h1>Welcome Screen!!</h1>
       ${((_a = req.session) === null || _a === void 0 ? void 0 : _a.userId)
         ? `
-      <a href=${routeNames_1.default.home}>Home</a>
-      <form method="post" action="/logout">
+      <a href=${routeNames_1.default.home.main}>Home</a>
+      <form method="post" action=${routeNames_1.default.auth.logout}>
         <button>Logout</button>
       </form>
       `
-        : `
-         
-      <a href=${routeNames_1.default.login}>Login</a>
-      <a href=${routeNames_1.default.signup}>Register</a>`}   
+        : `    
+      <a href=${routeNames_1.default.auth.login}>Login</a>
+      <a href=${routeNames_1.default.auth.signup}>Register</a>`}   
     `);
 });
-app.use("/", auth_1.router);
-app.use("/", home_1.homeRouter);
-app.use('/', mysql_1.default);
+app.use(routeNames_1.default.home.main, auth_1.router);
+app.use(routeNames_1.default.home.main, home_1.homeRouter);
+app.use(routeNames_1.default.home.main, mysql_1.default);
 app.listen(appConfig_1.appConfig.port, () => {
     console.log(`Example app listening on port ${appConfig_1.appConfig.port}`);
 });

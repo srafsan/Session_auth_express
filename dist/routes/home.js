@@ -10,7 +10,7 @@ const db_1 = require("../models/db");
 const routeNames_1 = __importDefault(require("../common/routeNames"));
 exports.homeRouter = (0, express_1.default)();
 // Home page route.
-exports.homeRouter.get(routeNames_1.default.home, sessionMiddleware_1.redirectLogin, (req, res) => {
+exports.homeRouter.get(routeNames_1.default.home.main, sessionMiddleware_1.redirectLogin, (req, res) => {
     const user = db_1.users.find((user) => user.id === req.session.userId);
     res.send(`
       <h1>Home</h1>

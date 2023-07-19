@@ -1,8 +1,8 @@
-import express, { Express, Request, Response, NextFunction } from "express";
+import express, { Express, Request, Response } from "express";
 import mysql, { Connection } from "mysql";
+import route from "../common/routeNames";
 
-
-const databaseRouter: Express = express()
+const databaseRouter: Express = express();
 
 // Database
 const db: Connection = mysql.createConnection({
@@ -12,20 +12,18 @@ const db: Connection = mysql.createConnection({
   database: "expressDB",
 });
 
-let users: any[] = []
+let users: any[] = [];
 
-databaseRouter.get('/users', (req: Request, res: Response) => {
+databaseRouter.get(route.common.users, (req: Request, res: Response) => {
   const sql = "SELECT * FROM users";
-  db.query(sql, (err:any, data:any)=> {
-    if(err) return res.json(err)
+  db.query(sql, (err: any, data: any) => {
+    if (err) return res.json(err);
 
     // users = data
     // console.log("db.ts", data);
 
-    return res.json(data)
-  })
-})
+    return res.json(data);
+  });
+});
 
-
-
-export {databaseRouter, users, db};
+export { databaseRouter, users, db };

@@ -5,9 +5,12 @@ import route from "../common/routeNames";
 
 export const homeRouter: Express = express();
 // Home page route.
-homeRouter.get(route.home, redirectLogin, (req: Request, res: Response) => {
-  const user = users.find((user) => user.id === req.session.userId);
-  res.send(`
+homeRouter.get(
+  route.home.main,
+  redirectLogin,
+  (req: Request, res: Response) => {
+    const user = users.find((user) => user.id === req.session.userId);
+    res.send(`
       <h1>Home</h1>
       <a href='/'>Main</a>
       <ul>
@@ -15,4 +18,5 @@ homeRouter.get(route.home, redirectLogin, (req: Request, res: Response) => {
         <li>Email: ${user?.email}</li>
       </ul>
     `);
-});
+  }
+);
